@@ -1,0 +1,29 @@
+{
+  "name": "orderonbackend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Sahil, Aditya, Alok",
+  "license": "ISC",
+  "dependencies": {
+    "@types/socket.io": "^2.1.13",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "env": "0.0.2",
+    "express": "^4.17.1",
+    "firebase": "^8.3.1",
+    "firebase-tools": "^9.6.1",
+    "geofire-common": "^5.2.0",
+    "http": "0.0.1-security",
+    "https": "^1.0.0",
+    "paytmchecksum": "^1.5.0",
+    "socket.io": "^4.0.1",
+    "socket.io-client": "^4.0.1"
+  },
+  "devDependencies": {},
+  "description": ""
+}
