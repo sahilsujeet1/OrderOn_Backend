@@ -7,7 +7,7 @@ require("firebase/firestore");
 
 var matchingDocs;
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   matchingDocs = [];
 
   var lt = parseFloat(req.body.location.latitude);
@@ -19,7 +19,7 @@ router.post("/", (req, res) => {
   // a separate query for each pair. There can be up to 9 pairs of bounds
   // depending on overlap, but in most cases there are 4.
 
-  const bounds = geofire.geohashQueryBounds(center, radiusInM);
+  const bounds = await geofire.geohashQueryBounds(center, radiusInM);
   const promises = [];
   for (const b of bounds) {
     const q = firebase.default
@@ -32,7 +32,7 @@ router.post("/", (req, res) => {
   }
 
   // Collect all the query results together into a single list
-  Promise.all(promises)
+  await Promise.all(promises)
     .then(async (snapshots) => {
       for (const snap of snapshots) {
         for (const doc of snap.docs) {
@@ -64,46 +64,74 @@ router.get("/get", async (req, res) => {
   res.json(matchingDocs);
 });
 
-router.post('/add', async (req,res) => {
-  var content = req.body
-  content.geohash = await geofire.geohashForLocation([content.lat, content.lon]);
-  content.location = new firebase.default.firestore.GeoPoint(content.lat,content.lon)
-  delete content.lon
-  delete content.lat
-  
-  firebase.default.firestore().collection(content.category).add(content)
-  .then((snapshot) => {
-    var storeId = snapshot.id
-    firebase.default.firestore().collection('users').doc(content.ownedBy).update({
-      stores : firebase.default.firestore.FieldValue.arrayUnion({storeId: storeId, category: content.category, name: content.name})
+router.post("/add", async (req, res) => {
+  var content = req.body;
+  content.geohash = await geofire.geohashForLocation([
+    content.lat,
+    content.lon,
+  ]);
+  content.location = new firebase.default.firestore.GeoPoint(
+    content.lat,
+    content.lon
+  );
+  delete content.lon;
+  delete content.lat;
+
+  firebase.default
+    .firestore()
+    .collection(content.category)
+    .add(content)
+    .then((snapshot) => {
+      var storeId = snapshot.id;
+      firebase.default
+        .firestore()
+        .collection("users")
+        .doc(content.ownedBy)
+        .update({
+          stores: firebase.default.firestore.FieldValue.arrayUnion({
+            storeId: storeId,
+            category: content.category,
+            name: content.name,
+          }),
+        });
+      res.json({ storeId: storeId });
     })
-    res.json({storeId: storeId})
-  }).catch(err => {
-    console.log(err)
-    res.json({error: err})
-  })
-  
-})
+    .catch((err) => {
+      console.log(err);
+      res.json({ error: err });
+    });
+});
 
-router.post('/update', (req,res) => {
-  var url = req.body.url
-  var category = req.body.category
-  var storeId = req.body.storeId
+router.post("/update", (req, res) => {
+  var url = req.body.url;
+  var category = req.body.category;
+  var storeId = req.body.storeId;
 
-  firebase.default.firestore().collection(category).doc(storeId).update({
-    imgURL: url
-  }).then(() => res.json("URL Added")).catch(err => {
-    console.log(err)
-    res.json({error: err})
-  })
-})
+  firebase.default
+    .firestore()
+    .collection(category)
+    .doc(storeId)
+    .update({
+      imgURL: url,
+    })
+    .then(() => res.json("URL Added"))
+    .catch((err) => {
+      console.log(err);
+      res.json({ error: err });
+    });
+});
 
-router.post('/sellerinfo', (req,res) => {
-  var uid = req.body
-  firebase.default.firestore().collection('users').doc(uid).get().then((query) => {
-    var data = query.data()
-    res.json(data)
-  })
-})
+router.post("/sellerinfo", (req, res) => {
+  var uid = req.body;
+  firebase.default
+    .firestore()
+    .collection("users")
+    .doc(uid)
+    .get()
+    .then((query) => {
+      var data = query.data();
+      res.json(data);
+    });
+});
 
 module.exports = router;

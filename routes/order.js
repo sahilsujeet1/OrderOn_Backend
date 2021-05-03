@@ -74,8 +74,8 @@ router.get("/paytm", (req, res) => {
     (params["INDUSTRY_TYPE_ID"] = "Retail"),
     (params["ORDER_ID"] = custOrderID),
     (params["CUST_ID"] = uid),
-    // (params["CALLBACK_URL"] = "https://sktraders-backend.herokuapp.com/paytm-status"),
-    (params["CALLBACK_URL"] = "http://localhost:3000/order/status"),
+    (params["CALLBACK_URL"] = "https://orderon-backend.herokuapp.com/order/status"),
+    // (params["CALLBACK_URL"] = "http://localhost:3000/order/status"),
     // (params["EMAIL"] = "a@a.com"),
     // (params["MOBILE_NO"] = 7300466153),
     (params["TXN_AMOUNT"] = amount);
@@ -253,14 +253,7 @@ async function orderSeller(cart, mode, address, uid, txnDetails) {
 }
 
 async function orderCustomer(details, uid, mode, address, txnDetails) {
-  // if (custOrderID.length == 0) {
-  //   var now = firebase.default.firestore.Timestamp.now().toDate();
-  //   var dd = now.getDate().toString();
-  //   var mm = (now.getMonth() + 1).toString();
-  //   var yyyy = now.getFullYear().toString();
-  //   var time = now.getTime().toString();
-  //   custOrderID = "OD" + dd + "-" + mm + "-" + yyyy + "-" + time;
-  // }
+  
   await firebase.default
     .firestore()
     .collection("users")
@@ -306,8 +299,6 @@ function generateID() {
 
   return id;
 }
-
-// module.exports = router
 
 module.exports = function (socketio) {
   io = socketio;
