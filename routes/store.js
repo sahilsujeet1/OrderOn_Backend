@@ -9,7 +9,7 @@ var input;
 
 router.post("/input", (req, res) => {
   input = req.body;
-  console.log(input);
+  res.status(200).json('Input taken')
 });
 
 router.get("/menu", (req, res) => {
@@ -101,7 +101,7 @@ router.post('/get-seller-products', (req,res) => {
 
 router.post('/delete-product', (req,res) => {
     firebase.default.firestore().collection(req.body.cat).doc(req.body.id).collection('menu').doc(req.body.itemId).delete()
-    .then((snapshot) => {
+    .then(() => {
         res.json("Item deleted")
     }).catch(err => {
         console.log(err)
@@ -116,7 +116,7 @@ router.post('/update-product', (req,res) => {
     var itemId = item.id
 
     firebase.default.firestore().collection(cat).doc(id).collection('menu').doc(itemId).update(item)
-    .then((snapshot) => {
+    .then(() => {
         res.json("Item updated")
     }).catch(err => {
         console.log(err)

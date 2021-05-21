@@ -5,12 +5,9 @@ const firebase = require('firebase/app');
 require('firebase/firestore');
 require('firebase/auth');
 
-var io, socketid;
-
-router.get('/customer', (req,res) => {
-    // var uid = firebase.default.auth().currentUser.uid;
+router.post('/customer', (req,res) => {
 var orders = []
-    firebase.default.firestore().collection('users').doc('iFRKUGF2PiaMis4VmHzk1JjlkHH2').collection('orders')
+    firebase.default.firestore().collection('users').doc(req.body.uid).collection('orders').orderBy('orderedAt','desc')
     .get().then((query) => {
         query.docs.forEach((doc) => {
             var order = doc.data()
@@ -27,9 +24,7 @@ router.post('/seller', (req,res) => {
     var id = req.body.id
     var orders = []
 
-    console.log(cat, id)
-
-    firebase.default.firestore().collection(cat).doc(id).collection('orders')
+    firebase.default.firestore().collection(cat).doc(id).collection('orders').orderBy('orderedAt','desc')
     .get().then((query) => {
         query.docs.forEach((doc) => {
             var order = doc.data()
@@ -58,8 +53,4 @@ router.post('/status-update', (req,res) => {
     })
 })
 
-
-
 module.exports =  router;
- 
-  
