@@ -43,6 +43,7 @@ const auth = require("./auth.js");
 const address = require("./routes/address.js");
 const order = require("./routes/order.js");
 const orderhistory = require("./routes/orderhistory.js");
+const paytmGateway = require("./routes/paytmGateway.js");
 
 app.use("/auth", auth);
 app.use("/store", store);
@@ -50,6 +51,7 @@ app.use("/stores", stores);
 app.use("/address", address);
 app.use("/order", order(io));
 app.use("/orderhistory", orderhistory);
+app.use("/paytmGateway", paytmGateway);
 
 app.get("/", (req, res) => {
   res.send("Welcome to Order On backend server");
